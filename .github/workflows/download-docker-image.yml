@@ -1,0 +1,43 @@
+name: 下载 docker 镜像
+
+on:
+  workflow_dispatch:
+    inputs:
+      imageName:
+        description: '下载的镜像名称'
+        required: true
+        default: ''
+      platform:
+        description: '镜像Arch[amd64 arm64 ...]'
+        required: true
+        default: 'amd64'
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SetUp Evn
+        run: |
+         mkdir output
+         echo platform=${{ github.event.inputs.platform }} image=${{ github.event.inputs.imageName }}
+      - name: Pull Image
+        run: |
+         docker pull --platform ${{ github.event.inputs.platform }} ${{ github.event.inputs.imageName }}
+      - name: Check Images
+        run: |
+         docker images
+      - name: Build Souece File
+        run: |
+         docker save ${{ github.event.inputs.imageName }} > ${{ github.event.inputs.imageName }}.tar
+         zip -q output/${{ github.event.inputs.imageName }}.zip ${{ github.event.inputs.imageName }}.tar
+         ls output -all -h
+      - name: upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+           name: ${{ github.event.inputs.imageName }}-${{ github.event.inputs.platform }}.zip
+           path: output
+      
+      
