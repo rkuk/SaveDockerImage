@@ -11,9 +11,9 @@ on:
         description: '镜像Arch[amd64 arm64 ...]'
         required: true
         default: 'amd64'
-  push:
-    branches:
-      - main
+#   push:
+#     branches:
+#       - main
 
 jobs:
   build-and-push:
