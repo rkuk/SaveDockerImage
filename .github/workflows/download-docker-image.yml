@@ -37,7 +37,7 @@ jobs:
       - name: upload Artifact
         uses: actions/upload-artifact@v3
         with:
-           name: ${{ github.event.inputs.imageName }}-${{ github.event.inputs.platform }}.zip
+           name: image.zip
            path: output
       
       
