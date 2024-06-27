@@ -5,9 +5,6 @@ import {
     existsSync,
     createReadStream
 } from "fs";
-import {
-    basename
-} from "path";
 
 function push(imageName) {
     const fileName = imageName.replace(/[\/:]/g, "-");
@@ -15,7 +12,7 @@ function push(imageName) {
         username: process.env.DAV_USER,
         password: process.env.DAV_PASS
     });
-    let uploadStream = client.createWriteStream(`/SSD/dockerImg/${fileName}`);
+    let uploadStream = client.createWriteStream(`/SSD/dockerImg/${fileName}.tar`);
     createReadStream("image.tar").pipe(uploadStream);
 }
 
