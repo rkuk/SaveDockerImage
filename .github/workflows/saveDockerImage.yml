@@ -16,16 +16,14 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - name: SetUp Evn
-        run: |
-         mkdir output
-         echo platform=${{ github.event.inputs.platform }} image=${{ github.event.inputs.imageName }}
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
       - name: Pull Image
         run: |
          docker pull --platform ${{ github.event.inputs.platform }} ${{ github.event.inputs.imageName }}
-      - name: Check Images
-        run: |
-         docker images
       - name: Build Souece File
         run: |
          docker save ${{ github.event.inputs.imageName }} > image.tar
