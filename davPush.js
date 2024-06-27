@@ -19,5 +19,4 @@ function push(imageName) {
     createReadStream("image.tar").pipe(uploadStream);
 }
 
-console.log(process.argv);
 push(process.argv[2]);

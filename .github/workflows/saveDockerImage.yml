@@ -26,7 +26,7 @@ jobs:
          docker pull --platform ${{ github.event.inputs.platform }} ${{ github.event.inputs.imageName }}
       - name: Build Souece File
         run: |
-         docker save ${{ github.event.inputs.imageName }} > image.tar
+         docker save -o image.tar ${{ github.event.inputs.imageName }}
       - name: save image to webdav
         run: npm run push ${{ github.event.inputs.imageName }}
         env:
