@@ -1,19 +1,16 @@
-name: 下载 docker 镜像
+name: SaveDockerImage to Webdav
 
 on:
   workflow_dispatch:
     inputs:
       imageName:
-        description: '下载的镜像名称'
+        description: 'Image name'
         required: true
         default: ''
       platform:
-        description: '镜像Arch[amd64 arm64 ...]'
+        description: 'Image Arch[amd64 arm64 ...]'
         required: true
         default: 'amd64'
-#   push:
-#     branches:
-#       - main
 
 jobs:
   build-and-push:
@@ -32,12 +29,9 @@ jobs:
       - name: Build Souece File
         run: |
          docker save ${{ github.event.inputs.imageName }} > image.tar
-         zip -q output/image.zip image.tar
-         ls output -all -h
-      - name: upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-           name: image.zip
-           path: output
-      
-      
+      - name: save image to webdav
+        run: npm run push ${{ github.event.inputs.imageName }}
+        env:
+          DAV_URL: ${{ secrets.DAV_URL }}
+          DAV_USER: ${{ secrets.DAV_USER }}
+          DAV_PASS: ${{ secrets.DAV_PASS }}

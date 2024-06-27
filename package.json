@@ -1,0 +1,9 @@
+{
+    "type": "module",
+    "scripts":{
+        "push":"node davPush.js"
+    },
+    "dependencies": {
+        "webdav": "^5.6.0"
+    }
+}
