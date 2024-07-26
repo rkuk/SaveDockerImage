@@ -1,0 +1,59 @@
+name: BuildDockerImage to Webdav
+
+on:
+    workflow_dispatch:
+        inputs:
+            imageName:
+                description: 'Image name'
+        required: true
+        default: ''
+    platform:
+        description: 'Image Arch[amd64 arm64 ...]'
+        required: true
+        default: 'amd64'
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      - 
+        name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+            node-version: 20
+      # -
+      #   name: Install node dav push
+      #   run: npm install
+      - 
+        name: Prepare build context if needed
+        run: if [[ -f init.sh ]]; then chmod u+x init.sh && ./init.sh ${{ github.event.inputs.platform }}; fi
+        shell: bash
+        working-directory: ./${{ github.event.inputs.imageName }}
+      - 
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - 
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - 
+        name: Build Image
+      - uses: docker/build-push-action@v5
+        with:
+            context: ./${{ github.event.inputs.imageName }}
+            platforms: linux/${{ github.event.inputs.platform }}
+            tags: ${{ github.event.inputs.imageName }}:latest
+            cache-from: type=gha
+            cache-to: type=gha,mode=max
+      - 
+        name: Export Image File
+        run: docker save -o image.tar ${{ github.event.inputs.imageName }}
+      - 
+        name: Push image to webdav
+        run: npm install && npm run push ${{ github.event.inputs.imageName }}
+        env:
+            DAV_URL: ${{ secrets.DAV_URL }}
+            DAV_USER: ${{ secrets.DAV_USER }}
+            DAV_PASS: ${{ secrets.DAV_PASS }}
