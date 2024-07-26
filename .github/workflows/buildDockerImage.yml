@@ -5,12 +5,12 @@ on:
         inputs:
             imageName:
                 description: 'Image name'
-        required: true
-        default: ''
-    platform:
-        description: 'Image Arch[amd64 arm64 ...]'
-        required: true
-        default: 'amd64'
+                required: true
+                default: ''
+            platform:
+                description: 'Image Arch[amd64 arm64 ...]'
+                required: true
+                default: 'amd64'
 
 jobs:
     build-and-push:
