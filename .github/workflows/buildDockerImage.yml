@@ -45,6 +45,7 @@ jobs:
           context: ./${{ github.event.inputs.imageName }}
           platforms: linux/${{ github.event.inputs.platform }}
           tags: ${{ github.event.inputs.imageName }}:latest
+          load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - 
