@@ -1,4 +1,4 @@
-name: SaveDockerImage to Webdav
+name: PullDockerImage to Webdav
 
 on:
   workflow_dispatch:
