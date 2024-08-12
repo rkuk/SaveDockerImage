@@ -5,3 +5,4 @@ apt update
 apt install -y git
 git clone https://github.com/Zeyi-Lin/HivisionIDPhotos
 mv HivisionIDPhotos/* ./ && rm -rf HivisionIDPhotos
+sed -i '/aliyun/d' Dockerfile
