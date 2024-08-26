@@ -1,6 +1,7 @@
 FROM ubuntu/python:3.10-22.04_stable
 
-RUN apt update && apt install -y bash python3.10-venv
+RUN ["apt", "update"]
+RUN ["apt", "install", "-y", "bash", "python3.10-venv"]
 
 ADD fastsdcpu.gz /root/
 
