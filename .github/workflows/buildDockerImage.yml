@@ -24,9 +24,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      # -
-      #   name: Install node dav push
-      #   run: npm install
       - 
         name: Prepare build context if needed
         run: if [[ -f init.sh ]]; then chmod u+x init.sh && ./init.sh ${{ github.event.inputs.platform }}; fi
@@ -48,6 +45,16 @@ jobs:
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - 
+        name: Modify the image after build if needed
+        run: if [[ -f end.sh ]]; then chmod u+x end.sh && ./end.sh ${{ github.event.inputs.platform }}; fi
+        shell: bash
+        working-directory: ./${{ github.event.inputs.imageName }}
+      - 
+        name: Convert container to image if needed
+        run: if docker ps --format "table {{.Names}}"|grep ${{ github.event.inputs.imageName }} &>/dev/null; then echo "converting container "${{ github.event.inputs.imageName }} && docker stop ${{ github.event.inputs.imageName }} && docker export -o container.tar ${{ github.event.inputs.imageName }} && docker rm -v ${{ github.event.inputs.imageName }} && docker rmi ${{ github.event.inputs.imageName }} && docker import container.tar ${{ github.event.inputs.imageName }}; fi
+        shell: bash
+        working-directory: ./${{ github.event.inputs.imageName }}
       - 
         name: Export Image File
         run: docker save -o image.tar ${{ github.event.inputs.imageName }}
