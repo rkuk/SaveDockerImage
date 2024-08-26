@@ -1,13 +1,11 @@
-FROM ubuntu/python:3.10-22.04_stable
-
-RUN ["/usr/bin/apt", "update"]
-RUN ["/usr/bin/apt", "install", "-y", "bash", "python3.10-venv"]
+FROM ubuntu:22.04
 
 ADD fastsdcpu.gz /root/
 
 SHELL [ "/bin/bash", "-c"  ]
 
-RUN mv /root/fastsdcpu* /root/fastsdcpu && cd /root/fastsdcpu && \
+RUN apt update && apt install -y python3-venv && \
+    mv /root/fastsdcpu* /root/fastsdcpu && cd /root/fastsdcpu && \
     chmod u+x ./start-webui.sh && \
     chmod u+x ./install.sh && ./install --disable-gui
 
