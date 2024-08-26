@@ -2,7 +2,8 @@ FROM ubuntu/python:3.10-22.04_stable
 
 ADD fastsdcpu.gz /root/
 
-# install thorim dependencies
+SHELL [ "/bin/bash", "-c"  ]
+
 RUN mv /root/fastsdcpu* /root/fastsdcpu && cd /root/fastsdcpu && \
     apt update && apt install -y python3.10-venv && \
     chmod u+x ./start-webui.sh && \
