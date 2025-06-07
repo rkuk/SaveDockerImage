@@ -3,4 +3,4 @@ platform=$1
 
 apt update
 apt install -y wget unzip
-wget https://github.com/Alex313031/thorium/releases/download/M124.0.6367.218/thorium-browser_124.0.6367.218_AVX.zip && unzip -q -d thorium *.zip && tar -czf thorium.gz thorium && rm -rf thorium thorium.zip 
+wget https://github.com/Alex313031/thorium/releases/download/M130.0.6723.174/thorium-browser_130.0.6723.174_AVX.zip && unzip -q -d thorium *.zip && tar -czf thorium.gz thorium && rm -rf thorium thorium.zip 
