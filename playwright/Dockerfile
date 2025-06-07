@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM debian:12.11
 
 ADD thorium.gz /usr/local/
 ADD playwright.mjs /root/
