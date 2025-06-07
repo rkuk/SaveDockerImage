@@ -12,7 +12,7 @@ function push(imageName) {
         username: process.env.DAV_USER,
         password: process.env.DAV_PASS
     });
-    let uploadStream = client.createWriteStream(`/SSD/dockerImg/${fileName}.tar`);
+    let uploadStream = client.createWriteStream(`/${fileName}.tar`);
     createReadStream("image.tar").pipe(uploadStream);
 }
 
