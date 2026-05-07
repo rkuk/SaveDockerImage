@@ -1,0 +1,66 @@
+name: BuildDockerImage and upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      imageName:
+        description: 'Image name'
+        required: true
+        default: ''
+      platform:
+        description: 'Image Arch[amd64 arm64 ...]'
+        required: true
+        default: 'amd64'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v4
+      - 
+        name: Setup node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - 
+        name: Prepare build context if needed
+        run: if [[ -f init.sh ]]; then chmod u+x init.sh && ./init.sh ${{ github.event.inputs.platform }}; fi
+        shell: bash
+        working-directory: ./${{ github.event.inputs.imageName }}
+      - 
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - 
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - 
+        name: Build Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ github.event.inputs.imageName }}
+          platforms: linux/${{ github.event.inputs.platform }}
+          tags: ${{ github.event.inputs.imageName }}:latest
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - 
+        name: Modify the image after build if needed
+        run: if [[ -f end.sh ]]; then chmod u+x end.sh && ./end.sh ${{ github.event.inputs.platform }}; fi
+        shell: bash
+        working-directory: ./${{ github.event.inputs.imageName }}
+      - 
+        name: Convert container to image if needed
+        run: if docker ps --format "table {{.Names}}"|grep ${{ github.event.inputs.imageName }} &>/dev/null; then echo "converting container "${{ github.event.inputs.imageName }} && docker stop ${{ github.event.inputs.imageName }} && docker export -o container.tar ${{ github.event.inputs.imageName }} && docker rm -v ${{ github.event.inputs.imageName }} && docker rmi ${{ github.event.inputs.imageName }} && docker import container.tar ${{ github.event.inputs.imageName }}; fi
+        shell: bash
+        working-directory: ./${{ github.event.inputs.imageName }}
+      - 
+        name: Export Image File
+        run: docker save -o image.tar ${{ github.event.inputs.imageName }}
+      - 
+        name: Upload image
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.inputs.imageName }}
+          path: image.tar
