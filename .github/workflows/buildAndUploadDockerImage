@@ -60,8 +60,7 @@ jobs:
         run: docker save -o image.tar ${{ github.event.inputs.imageName }}
       - 
         name: Upload image
-        run: npm install && npm run push ${{ github.event.inputs.imageName }}
-        env:
-          DAV_URL: ${{ secrets.DAV_URL }}
-          DAV_USER: ${{ secrets.DAV_USER }}
-          DAV_PASS: ${{ secrets.DAV_PASS }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.inputs.imageName }}
+          path: image.tar
