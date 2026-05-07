@@ -1,4 +1,4 @@
-FROM debian:12.11
+FROM debian:bookworm-slim
 
 ADD thorium.gz /usr/local/
 ADD playwright.mjs /root/
@@ -10,7 +10,7 @@ RUN apt-get update && \
 
 SHELL [ "/bin/bash", "-c"  ]
 
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash && \
     source $HOME/.nvm/nvm.sh && \
     nvm install --lts && \
     npm i -g playwright @playwright/test && \
