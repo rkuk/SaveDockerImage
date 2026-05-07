@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim
+FROM debian:stable
 
 ADD thorium.gz /usr/local/
 ADD playwright.mjs /root/
